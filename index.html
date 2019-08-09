@@ -8,28 +8,51 @@
     <link rel="stylesheet" type="" href="/style.css" >
 </head>
 <body>
-    <ul id="messages"></ul>
-    <form id="username" action="">
-        <input id="u" autocomplete="off" />
-        <button>Set Username</button>
-    </form>
-    <form id="messages" action="">
-        <input id="m" autocomplete="off" />
-        <button>Send</button>
-    </form>
+    <div class="message-container">
+        <ul id="messages"></ul>
+    </div>
+    <div id="chatroom-info">
+        <h2>Username: <span id="currentUser"></span></h2>
+    </div>
+    <div class="input-container">
+        <form id="username" action="">
+            <input id="u" autocomplete="off" placeholder="please choose your username" />
+            <button id="u-button">Set Username</button>
+        </form>
+        <form id="messages" class="message-form" action="">
+            <input id="m" autocomplete="off" />
+            <button>Send</button>
+        </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
         $(function() {
             let socket = io()
-            $('#messages').submit(function(e) {
-                e.preventDefault(); // prevents page reloading
+            
+            $('.message-form').submit(function(e) {
+                e.preventDefault()
                 socket.emit('chat message', $('#m').val())
                 $('#m').val('')
                 return false
             })
-            $('#username')
-            socket.on('chat message', function(msg){
+
+            $('#username').submit(function(e) {
+                e.preventDefault()
+                socket.emit('username', $('#u').val())
+                $('#u').attr("readonly", true)
+                $('#u-button').attr("disabled", true)
+            })
+            
+            socket.on('chat message', function(username, msg){
+                $('#messages').append($('<li>').text(username + ': ' + msg))
+            })
+
+            socket.on('username', function(username){
+                $('#currentUser').html(username)
+            })
+
+            socket.on('signInOut', function(msg){
                 $('#messages').append($('<li>').text(msg))
             })
         })

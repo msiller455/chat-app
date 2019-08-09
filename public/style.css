@@ -1,24 +1,26 @@
-body {
-    font: 13px Helvetica, Arial;
-}
-
 * { 
     margin: 0;
     padding: 0;
     box-sizing: border-box
 }
 
+body {
+    font: 13px Helvetica, Arial;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 92vh;
+}
+
+
 
 form {
     background: #000;
     padding: 3px;
-    position: fixed;
-    bottom: 0;
     width: 100%;
 }
 
 form input {
-    border: 0;
     padding: 10px;
     width: 90%;
     margin-right: .5%;
@@ -44,3 +46,17 @@ form button {
 #messages li:nth-child(odd) {
     background: #eee
 }
+
+.input-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#username {
+    margin: 0;
+    padding: 0;
+}
+

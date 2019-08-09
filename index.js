@@ -12,13 +12,22 @@ app.get('/', function(req, res) {
 let population = 0
 io.on('connection', function(socket){
     population += 1
-    socket.broadcast.emit('chat message', `New user has entered the chat, currently ${population} users`)
-    socket.on('chat message', function(msg) {
-        io.emit('chat message', msg)
+    let userId = socket.id
+    let username = ``
+    socket.broadcast.emit('signInOut', `A new user has entered the chat, currently ${population} users`)
+    io.emit('username', username)
+    io.emit('userId', userId)
+    socket.on('username', function(newUsername) {
+        username = newUsername
+        io.to(`${userId}`).emit('username', username)
     })
+    socket.on('chat message', function(msg) {
+        io.emit('chat message', username, msg)
+    })
+
     socket.broadcast.on('disconnect', function() {
         population -= 1
-        io.emit('chat message', `User has left the chat, currently ${population}`)
+        io.emit('signInOut', (population == 1 ? `${username} has left the chat, currently 1 user in the chat` : `${username} has left the chat, currently ${population} users in the chat`))
     })
 })
 
